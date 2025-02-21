@@ -50,7 +50,7 @@
 
 <style scoped>
 .days::-webkit-scrollbar {
-  height: 3px;
+  height: 8px;
   width: 1px !important;
 }
 
@@ -59,7 +59,8 @@
 }
 
 .days::-webkit-scrollbar-thumb {
-  background-color: #000000;
+  background-color: rgba(0, 0, 0, 25%);
+  opacity: 50%;
   border-radius: 5px;
 }
 
@@ -79,8 +80,9 @@
   gap: 10px;
   padding-top: 10px;
   width: 100%;
+  height: 40%;
   overflow-x: scroll;
-  padding-bottom: 5px;
+  padding-bottom: 10px;
   position: relative;
 }
 
@@ -98,6 +100,7 @@
   justify-content: start;
   align-items: center;
   gap: 10px;
+  transition: transform 0.2s ease;
 }
 
 .day-icon {
@@ -106,6 +109,10 @@
   align-items: center;
   width: 50%;
   height: 40%;
+}
+
+.day:hover {
+  transform: scale(1.05);
 }
 
 .city-name {
@@ -180,7 +187,7 @@
   border: 1px solid black;
   border-radius: 20px;
   width: 300px;
-  height: 350px;
+  height: 360px;
   display: flex;
   flex-direction: column;
   justify-content: center;
