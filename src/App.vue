@@ -1,25 +1,53 @@
 <script setup>
 import Searchbar from './components/Searchbar.vue'
-import CityCard from './CityCard.vue'
-import CityCard2 from './CityCard2.vue'
-
-import Snowing from './components/Snowing.vue'
-import Wind from './components/icons/Wind.vue'
-import Raining from './components/icons/Raining.vue'
-import Sun from './components/icons/Sun.vue'
-import Clouds from './components/Clouds.vue'
-import { ref } from 'vue'
+import CityCard from './components/CityCard.vue'
+import { ref, onMounted } from 'vue'
 import draggable from 'vuedraggable'
 import { fetchWeatherApi } from 'openmeteo'
 
-const cards = ref([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }])
+//const cards = ref([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }])
+const cards = ref([])
 
-async function showCity(event) {
-  console.log('show this city: ', event)
+const searchCity = ref(null)
 
+function removeCity(event) {
+  cards.value = cards.value.filter((c) => c.id !== event.id)
+  localStorage.setItem('cities', JSON.stringify({ ...cards.value }))
+  searchCity.value = null
+}
+
+function addToCity(event) {
+  cards.value.push(event)
+  localStorage.setItem('cities', JSON.stringify({ ...cards.value }))
+
+  searchCity.value = null
+}
+
+async function loadCities() {
+  const storedCity = localStorage.getItem('cities')
+  if (storedCity) {
+    try {
+      let cities = JSON.parse(storedCity)
+      for (let c in cities) {
+        c = await getWeatherForCity(cities[c])
+        cards.value.push({ ...c, saved: true })
+      }
+    } catch (e) {
+      // If parsing fails, keep default values
+
+      cards.value = []
+    }
+  }
+}
+
+onMounted(() => {
+  loadCities()
+})
+
+async function getWeatherForCity(city) {
   const params = {
-    latitude: event.latitude,
-    longitude: event.longitude,
+    latitude: city.latitude,
+    longitude: city.longitude,
     hourly: [
       'temperature_2m',
       'relative_humidity_2m',
@@ -29,11 +57,12 @@ async function showCity(event) {
       'snowfall',
       'weather_code',
       'cloud_cover',
+      'wind_speed_10m',
     ],
   }
+
   const url = 'https://api.open-meteo.com/v1/forecast'
-  const responses = await fetchWeatherApi(url, params)
-  console.log('weather for the city of: ', event.name)
+  let responses = await fetchWeatherApi(url, params)
 
   // Helper function to form time ranges
   const range = (start, stop, step) =>
@@ -41,7 +70,6 @@ async function showCity(event) {
 
   // Process first location. Add a for-loop for multiple locations or weather models
   const response = responses[0]
-  console.log(response)
 
   // Attributes for timezone and location
   const utcOffsetSeconds = response.utcOffsetSeconds()
@@ -66,23 +94,18 @@ async function showCity(event) {
       snowfall: hourly.variables(5).valuesArray(),
       weatherCode: hourly.variables(6).valuesArray(),
       cloudCover: hourly.variables(7).valuesArray(),
+      windSpeed10m: hourly.variables(8).valuesArray(),
     },
   }
 
-  // `weatherData` now contains a simple structure with arrays for datetime and weather data
-  for (let i = 0; i < weatherData.hourly.time.length; i++) {
-    console.log(
-      weatherData.hourly.time[i].toISOString(),
-      weatherData.hourly.temperature2m[i],
-      weatherData.hourly.relativeHumidity2m[i],
-      weatherData.hourly.apparentTemperature[i],
-      weatherData.hourly.precipitationProbability[i],
-      weatherData.hourly.rain[i],
-      weatherData.hourly.snowfall[i],
-      weatherData.hourly.weatherCode[i],
-      weatherData.hourly.cloudCover[i],
-    )
-  }
+  return { ...city, weather: weatherData }
+}
+
+async function showCity(event) {
+  let city = { ...event, latitude: event.lat, longitude: event.long }
+  let res = await getWeatherForCity(city)
+  searchCity.value = { ...res }
+  return res
 }
 
 //TODO
@@ -92,17 +115,23 @@ async function showCity(event) {
 
 <template>
   <main>
-    <h1>Weatherman</h1>
+    <h1 class="title">Weatherman</h1>
     <Searchbar @show="showCity"></Searchbar>
+    <div class="searchResults" v-if="searchCity != null">
+      <CityCard :city="searchCity" @save="addToCity"></CityCard>
+      <div class="searchBorder"></div>
+    </div>
     <draggable
       class="list"
       :list="cards"
-      item-key="id"
+      easing="cubic-bezier(1, 0, 0, 1)"
+      itemKey="'id'"
+      handle=".corner"
       @start="dragging = true"
       @end="dragging = false"
     >
       <template #item="{ element }">
-        <CityCard :key="element.id" />
+        <CityCard :key="element.id" :city="element" @remove="removeCity" />
       </template>
     </draggable>
   </main>
@@ -114,7 +143,7 @@ async function showCity(event) {
 body {
   margin: 0;
   padding: 0;
-  padding-top: 50px;
+  padding-bottom: 3em;
 }
 
 main {
@@ -134,5 +163,24 @@ main {
   justify-content: center;
   align-items: center;
   gap: 30px;
+}
+
+.searchResults {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.searchBorder {
+  padding-bottom: 30px;
+  border-bottom: 1px solid black;
+  width: 200%;
+}
+
+.title {
+  font-size: 4em;
+  margin: 0;
+  padding: 0.5em;
 }
 </style>
