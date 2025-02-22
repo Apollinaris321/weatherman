@@ -95,7 +95,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import Snowing from './Snowing.vue'
-import Wind from './icons/Wind.vue'
 import Raining from './icons/Raining.vue'
 import Sun from './icons/Sun.vue'
 import Clouds from './Clouds.vue'
