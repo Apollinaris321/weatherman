@@ -93,7 +93,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import Snowing from './Snowing.vue'
 import Raining from './icons/Raining.vue'
 import Sun from './icons/Sun.vue'
@@ -101,8 +101,6 @@ import Clouds from './Clouds.vue'
 import Bookmark from './icons/Bookmark.vue'
 import BookmarkFill from './icons/BookmarkFill.vue'
 import Night from './icons/Night.vue'
-
-//TODO make a bookmark sign for save and animation to fill it out when clicking on it
 
 const props = defineProps({
   city: {
@@ -125,6 +123,13 @@ const days = ref([])
 const nighttime = ref(false)
 
 const bookmarked = ref(false)
+
+watch(bookmarked, async (oldVal, newVal) => {
+  if (bookmarked.value != props.city?.saved) {
+    bookmarked.value = props.city?.saved
+  }
+})
+
 const emit = defineEmits(['save', 'remove'])
 
 function bookmark() {

@@ -4,23 +4,27 @@ import CityCard from './components/CityCard.vue'
 import { ref, onMounted } from 'vue'
 import draggable from 'vuedraggable'
 import { fetchWeatherApi } from 'openmeteo'
+import CustomTitle from './components/CustomTitle.vue'
 
-//const cards = ref([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }])
 const cards = ref([])
 
 const searchCity = ref(null)
+const searchCityBorder = ref(false)
+const searchCityBorder2 = ref(false)
 
 function removeCity(event) {
   cards.value = cards.value.filter((c) => c.id !== event.id)
   localStorage.setItem('cities', JSON.stringify({ ...cards.value }))
-  searchCity.value = null
 }
 
 function addToCity(event) {
-  cards.value.push(event)
+  cards.value.push({ ...event, saved: true })
+  cards.value.reverse()
   localStorage.setItem('cities', JSON.stringify({ ...cards.value }))
 
   searchCity.value = null
+  searchCityBorder.value = false
+  searchCityBorder2.value = false
 }
 
 async function loadCities() {
@@ -105,6 +109,9 @@ async function showCity(event) {
   let city = { ...event, latitude: event.lat, longitude: event.long }
   let res = await getWeatherForCity(city)
   searchCity.value = { ...res }
+
+  searchCityBorder.value = true
+  searchCityBorder2.value = true
   return res
 }
 
@@ -115,12 +122,16 @@ async function showCity(event) {
 
 <template>
   <main>
-    <h1 class="title">Weatherman</h1>
+    <CustomTitle></CustomTitle>
     <Searchbar @show="showCity"></Searchbar>
-    <div class="searchResults" v-if="searchCity != null">
-      <CityCard :city="searchCity" @save="addToCity"></CityCard>
-      <div class="searchBorder"></div>
-    </div>
+    <Transition name="searchresultscard">
+      <div class="searchResults" v-if="searchCityBorder2">
+        <CityCard :city="searchCity" @save="addToCity"></CityCard>
+      </div>
+    </Transition>
+    <Transition name="searchborderbar">
+      <div v-if="searchCityBorder" class="searchBorder"></div>
+    </Transition>
     <draggable
       class="list"
       :list="cards"
@@ -131,7 +142,12 @@ async function showCity(event) {
       @end="dragging = false"
     >
       <template #item="{ element }">
-        <CityCard :key="element.id" :city="element" @remove="removeCity" />
+        <CityCard
+          class="fade-in-card"
+          v-bind:key="element.id"
+          :city="element"
+          @remove="removeCity"
+        />
       </template>
     </draggable>
   </main>
@@ -175,12 +191,64 @@ main {
 .searchBorder {
   padding-bottom: 30px;
   border-bottom: 1px solid black;
-  width: 200%;
+  width: 60%;
 }
 
-.title {
-  font-size: 4em;
-  margin: 0;
-  padding: 0.5em;
+.fade-in-card {
+  animation: fade 0.5s ease-in;
+}
+
+@keyframes fade {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.searchresultscard-enter-active {
+  opacity: 0;
+  transform: scale(0);
+  transition:
+    transform 0.5s ease,
+    opacity 0.5s ease;
+}
+
+.searchresultscard-enter-to {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.searchresultscard-leave-active {
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    transform 0.5s ease,
+    opacity 0.5s ease;
+}
+
+.searchresultscard-leave-to {
+  transform: scale(0);
+  opacity: 0;
+}
+
+.searchborderbar-enter-active {
+  width: 0%;
+  transition: width 0.5s ease;
+}
+
+.searchborderbar-enter-to {
+  width: 60%;
+}
+
+.searchborderbar-leave-active {
+  transition: width 0.5s ease;
+}
+
+.searchborderbar-leave-to {
+  width: 0%;
 }
 </style>

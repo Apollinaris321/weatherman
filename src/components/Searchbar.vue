@@ -135,8 +135,8 @@ input:focus {
 }
 
 .magnify {
-  width: 80%;
-  height: 80%;
+  width: 60%;
+  height: 60%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -145,6 +145,20 @@ input:focus {
 .cont {
   position: relative;
   width: 30%;
+  animation: start 1s ease-in;
+}
+
+@keyframes start {
+  0% {
+    transform: translateY(-220%);
+    width: 0%;
+  }
+  50% {
+    transform: translateY(0%);
+  }
+  100% {
+    width: 30%;
+  }
 }
 
 .suggestions {
