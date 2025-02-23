@@ -44,8 +44,10 @@ async function loadCities() {
   }
 }
 
-onMounted(() => {
-  loadCities()
+onMounted(async () => {
+  await loadCities()
+  console.log(cards.value.length === 0)
+
   if (cards.value.length === 0) {
     const stockholm = {
       id: 2673730,
