@@ -46,6 +46,20 @@ async function loadCities() {
 
 onMounted(() => {
   loadCities()
+  if (cards.value.length === 0) {
+    const stockholm = {
+      id: 2673730,
+      name: 'Stockholm',
+      lat: 59.32938,
+      long: 18.06871,
+      country_code: 'SE',
+      country: 'Sweden',
+      saved: true,
+      latitude: 59.32938,
+      longitude: 18.06871,
+    }
+    showCity(stockholm)
+  }
 })
 
 async function getWeatherForCity(city) {
