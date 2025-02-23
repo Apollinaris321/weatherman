@@ -54,7 +54,7 @@ onMounted(() => {
       long: 18.06871,
       country_code: 'SE',
       country: 'Sweden',
-      saved: true,
+      saved: false,
       latitude: 59.32938,
       longitude: 18.06871,
     }
