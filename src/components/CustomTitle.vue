@@ -43,6 +43,36 @@ import Cloud from './icons/Cloud.vue'
 import gsap from 'gsap'
 import { onMounted, onUnmounted, ref } from 'vue'
 
+function animateSlide() {
+  let arr = document.getElementsByClassName('letter')
+
+  console.log()
+
+  let start_x = arr[5].getBoundingClientRect().x
+  let start_y = arr[5].getBoundingClientRect().y
+
+  for (let i = 0; i < arr.length; i++) {
+    let x_diff = arr[i].getBoundingClientRect().x - start_x
+    let y_diff = arr[i].getBoundingClientRect().y - start_y
+
+    gsap.defaults({ force3D: true })
+    gsap.set(arr[i], {
+      x: -x_diff,
+      y: -y_diff,
+      opacity: 0,
+    })
+    console.log('after moving: ', arr[i].getBoundingClientRect().x)
+    gsap.to(arr[i], {
+      x: 0,
+      y: 0,
+      opacity: 1,
+      duration: 0.5,
+      ease: 'ease.in',
+    })
+    console.log('finished: ', arr[i].getBoundingClientRect().x)
+  }
+}
+
 onMounted(() => {
   gsap.fromTo(
     '.cloud1',
@@ -56,6 +86,12 @@ onMounted(() => {
       duration: 15,
       ease: 'linear',
       repeat: -1,
+      keyframes: {
+        '0%': { opacity: 0 },
+        '10%': { opacity: 1 },
+        '90%': { opacity: 1 },
+        '100%': { opacity: 0 },
+      },
     },
   )
 
@@ -71,8 +107,16 @@ onMounted(() => {
       duration: 10,
       ease: 'linear',
       repeat: -1,
+      keyframes: {
+        '0%': { opacity: 0 },
+        '10%': { opacity: 1 },
+        '90%': { opacity: 1 },
+        '100%': { opacity: 0 },
+      },
     },
   )
+
+  animateSlide()
 })
 </script>
 
@@ -154,6 +198,7 @@ onMounted(() => {
 }
 */
 
+/*
 .letter0 {
   opacity: 1;
   animation: moveto1 0.5s ease;
@@ -317,4 +362,5 @@ onMounted(() => {
     transform: translateX(0);
   }
 }
+*/
 </style>

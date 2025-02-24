@@ -5,6 +5,7 @@ import { ref, onMounted } from 'vue'
 import draggable from 'vuedraggable'
 import { fetchWeatherApi } from 'openmeteo'
 import CustomTitle from './components/CustomTitle.vue'
+import CustomTitle2 from './components/CustomTitle2.vue'
 
 const cards = ref([])
 
