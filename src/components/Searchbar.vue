@@ -18,7 +18,7 @@
             class="menu-item"
             @click="selectOption(city)"
           >
-            {{ city.name }}, {{ city.country }}
+            <div class="searchtext">{{ city.name }}, {{ city.country }}</div>
           </li>
         </ul>
       </transition>
@@ -145,18 +145,19 @@ input:focus {
 .cont {
   position: relative;
   width: 30%;
-  animation: start 1s ease-in;
+  min-width: 300px;
+  animation: start 0.6s ease;
 }
 
 @keyframes start {
   0% {
-    transform: translateY(-220%);
+    opacity: 0;
     width: 0%;
   }
   50% {
-    transform: translateY(0%);
   }
   100% {
+    opacity: 100%;
     width: 30%;
   }
 }
@@ -233,5 +234,13 @@ input:focus {
 .fade-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+.searchtext {
+  transition: transform 0.2s ease;
+}
+
+.searchtext:hover {
+  transform: scale(1.05);
 }
 </style>

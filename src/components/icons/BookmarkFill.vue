@@ -4,10 +4,16 @@
     height="24px"
     viewBox="0 -960 960 960"
     width="24px"
-    fill="#e8eaed"
+    fill="#000"
   >
     <path
       d="M220-150v-597.69Q220-778 241-799q21-21 51.31-21h375.38Q698-820 719-799q21 21 21 51.31V-150L480-261.54 220-150Z"
     />
   </svg>
 </template>
+
+<style scoped>
+path {
+  border: 9px solid black;
+}
+</style>

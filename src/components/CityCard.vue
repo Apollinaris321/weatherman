@@ -296,8 +296,8 @@ const doDrag = (e) => {
 
 .corner {
   position: absolute;
-  border-right: 3px solid black;
-  border-bottom: 3px solid black;
+  border-right: 3px solid rgba(0, 0, 0, 25%);
+  border-bottom: 3px solid rgba(0, 0, 0, 25%);
   border-bottom-right-radius: 20px;
   background-color: transparent;
   width: 8%;
@@ -305,6 +305,11 @@ const doDrag = (e) => {
   top: 92%;
   left: 92%;
   cursor: grab;
+}
+
+.corner:hover {
+  border-right: 3px solid rgba(0, 0, 0);
+  border-bottom: 3px solid rgba(0, 0, 0);
 }
 
 .days::-webkit-scrollbar {
@@ -336,7 +341,7 @@ const doDrag = (e) => {
   align-items: start;
   justify-content: start;
   gap: 10px;
-  padding-top: 10px;
+  padding-top: 15px;
   width: 100%;
   height: 40%;
   overflow-x: scroll;
@@ -452,7 +457,7 @@ const doDrag = (e) => {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding-bottom: 10px;
+  padding-bottom: 15px;
 }
 
 .half {
@@ -465,14 +470,12 @@ const doDrag = (e) => {
 }
 
 .border-bottom {
-  border-bottom: 1px solid black;
+  border-bottom: 2px solid black;
   width: 95%;
 }
 
 .save {
   display: flex;
-  background-color: white;
-  box-shadow: 0 3px 10px rgb(0 0 0 / 0.15);
   padding: 4px;
   transform-origin: center;
   cursor: pointer;
@@ -516,15 +519,10 @@ const doDrag = (e) => {
 
 .pressable-button {
   font-weight: bold;
-  color: black;
   background-color: white;
   border: none;
-  box-shadow:
-    0 4px 6px rgba(0, 0, 0, 0.1),
-    0 2px 4px rgba(0, 0, 0, 0.06); /* Initial shadow */
-  transition:
-    transform 0.1s ease,
-    box-shadow 0.1s ease;
+  transition: transform 0.1s ease;
+  box-shadow: 0.1s ease;
   cursor: pointer;
   border-radius: 50%;
   transition: transform 0.3s ease-in-out;
@@ -536,12 +534,9 @@ const doDrag = (e) => {
 
 .pressable-button:active {
   transform: scale(0.9); /* Scale down */
-  box-shadow:
-    0 2px 3px rgba(0, 0, 0, 0.1),
-    0 1px 2px rgba(0, 0, 0, 0.06); /* Flatten shadow */
 }
 
 .bookmark {
-  fill: black;
+  z-index: 10;
 }
 </style>

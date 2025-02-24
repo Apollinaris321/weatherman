@@ -186,7 +186,7 @@ main {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 30px;
+  gap: 40px;
 }
 
 .list {
@@ -194,7 +194,7 @@ main {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 30px;
+  gap: 50px;
 }
 
 .searchResults {
@@ -211,12 +211,12 @@ main {
 }
 
 .fade-in-card {
-  animation: fade 0.5s ease-in;
+  animation: fade 0.5s ease;
 }
 
 @keyframes fade {
   0% {
-    transform: scale(0);
+    transform: scale(0.95);
     opacity: 0;
   }
   100% {
